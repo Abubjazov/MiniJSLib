@@ -16,7 +16,7 @@ export default class Customizator {
 
         function recursy(element) {
             element.childNodes.forEach(node => {
-                if (node.nodeName === '#text' && node.nodeValue.replace(/\S+/g, '').length > 0) {
+                if (node.nodeName === '#text' && node.nodeValue.replace(/\s+/g, '').length > 0) {
 
                     if (!node.parentNode.getAttribute('data-fz')) {
                         let nodeFzStyles = window.getComputedStyle(node.parentNode, null).fontSize;

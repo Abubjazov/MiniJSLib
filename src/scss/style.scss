@@ -71,6 +71,10 @@ hr {
         border: 1px solid rgba(0,0,0, .2);
         border-radius: 4px;
         font-size: 15px;
+        &:hover {
+            transition: opacity .15s ease;
+            background-color: rgba($color: #000000, $alpha: .2);
+        }
     }
 }
 
