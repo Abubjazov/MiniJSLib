@@ -2,20 +2,21 @@ export default class Customizator {
     constructor() {
         this.btnBlock = document.createElement('div');
         this.colorPicker = document.createElement('input');
+        this.scale = localStorage.getItem('scale') || 1;
+        this.color = localStorage.getItem('color') || '#ffffff';
 
         this.btnBlock.addEventListener('click', (e) => this.onScaleChange(e));
         this.colorPicker.addEventListener('input', (e) => this.onColorChange(e));
     }
 
     onScaleChange(e) {
-        let scale;
         const body = document.querySelector('body');
 
-        if (e.target.value) {
-            scale = +e.target.value.replace(/X/g, '');
+        if (e) {
+            this.scale = +e.target.value.replace(/X/g, '');
         }
 
-        function recursy(element) {
+        const recursy = (element) => {
             element.childNodes.forEach(node => {
                 if (node.nodeName === '#text' && node.nodeValue.replace(/\s+/g, '').length > 0) {
 
@@ -23,9 +24,9 @@ export default class Customizator {
                         let nodeFzStyles = window.getComputedStyle(node.parentNode, null).fontSize;
 
                         node.parentNode.setAttribute('data-fz', +nodeFzStyles.replace(/px/g, ''));
-                        node.parentNode.style.fontSize = node.parentNode.getAttribute('data-fz') * scale + 'px';
+                        node.parentNode.style.fontSize = node.parentNode.getAttribute('data-fz') * this.scale + 'px';
                     } else {
-                        node.parentNode.style.fontSize = node.parentNode.getAttribute('data-fz') * scale + 'px';
+                        node.parentNode.style.fontSize = node.parentNode.getAttribute('data-fz') * this.scale + 'px';
                     }
 
                 } else {
@@ -35,13 +36,19 @@ export default class Customizator {
         }
 
         recursy(body);
+        localStorage.setItem('scale', this.scale);
     }
 
     onColorChange(e) {
         const body = document.querySelector('body');
         body.style.backgroundColor = e.target.value;
-    
-        console.log(e.target.value);
+        localStorage.setItem('color', e.target.value);
+    }
+
+    loadLocalStorageSettings() {
+        const body = document.querySelector('body');
+        body.style.backgroundColor = this.color;
+        this.colorPicker.value = this.color;
     }
 
     injectStyle() {
@@ -93,6 +100,8 @@ export default class Customizator {
 
     render() {
         this.injectStyle();
+        this.onScaleChange();
+        this.loadLocalStorageSettings();
 
         let scaleInputS = document.createElement('input'),
             scaleInputM = document.createElement('input'),
