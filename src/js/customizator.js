@@ -2,10 +2,12 @@ export default class Customizator {
     constructor() {
         this.btnBlock = document.createElement('div');
         this.colorPicker = document.createElement('input');
+        this.clearSettings = document.createElement('div');
         this.scale = localStorage.getItem('scale') || 1;
         this.color = localStorage.getItem('color') || '#ffffff';
 
         this.btnBlock.addEventListener('click', (e) => this.onScaleChange(e));
+        this.clearSettings.addEventListener('click', () => this.resetSettings());
         this.colorPicker.addEventListener('input', (e) => this.onColorChange(e));
     }
 
@@ -33,7 +35,7 @@ export default class Customizator {
                     recursy(node);
                 }
             });
-        }
+        };
 
         recursy(body);
         localStorage.setItem('scale', this.scale);
@@ -83,6 +85,7 @@ export default class Customizator {
             border: 1px solid rgba(0,0,0, .2);
             border-radius: 4px;
             font-size: 15px;
+            cursor: pointer;
             transition: opacity .15s ease;
         }
         .scale_btn:hover {            
@@ -92,10 +95,24 @@ export default class Customizator {
         .color {
             width: 40px;
             height: 40px;
-        }        
+            cursor: pointer;
+        }  
+        
+        .clear {
+            font-size: 20px;
+            cursor: pointer;
+        }
         `;
 
         document.querySelector('head').appendChild(style);
+    }
+
+    resetSettings() {
+        localStorage.clear();
+        this.scale = 1;
+        this.color = '#ffffff';
+        this.onScaleChange();
+        this.loadLocalStorageSettings();
     }
 
     render() {
@@ -107,7 +124,9 @@ export default class Customizator {
             scaleInputM = document.createElement('input'),
             panel = document.createElement('div');
 
-        panel.append(this.btnBlock, this.colorPicker);
+        panel.append(this.btnBlock, this.colorPicker, this.clearSettings);
+        this.clearSettings.innerHTML = '&times';
+        this.clearSettings.classList.add('clear');
 
         scaleInputS.classList.add('scale_btn');
         scaleInputM.classList.add('scale_btn');
